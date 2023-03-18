@@ -1,12 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Ömer Taşdemir</title>
 </head>
+
 <body>
-    
+    <h1>90 derece ye kadar k faktör hesaplama</h1>
+    <label for="acinin-boyu">Açının Boyu</label>
+    <input onfocus="imagePrint('https://blog.tekyaz.com/kfaktor/90_1.PNG');" type="text" id="acinin-boyu">
+    <br>
+    <br>
+    <label for="">l1 ölçüsü</label>
+    <input onfocus="imagePrint('https://blog.tekyaz.com/kfaktor/90_2.PNG');" type="text" name="" id="">
+    <br>
+    <br>
+    <label for="">l2 ölçüsü</label>
+    <input onfocus="imagePrint('https://blog.tekyaz.com/kfaktor/90_3.PNG');" type=" text" name="" id="">
+    <br>
+    <br>
+    <label for="">T saç kalınlığı</label>
+    <input onfocus="imagePrint('https://blog.tekyaz.com/kfaktor/90_4.PNG');" type=" text" name="" id="">
+    <br>
+    <br>
+    <label for="">r büküm açısı</label>
+    <input onfocus="imagePrint('https://blog.tekyaz.com/kfaktor/90_5.PNG');" type=" text" name="" id="">
+
+    <button id=""> Hesapla </button>
+    <br>
+    <img style="margin-right: 10px;" width="400" src="" id="image-data" alt="">
+
+    <script>
+
+        function imagePrint(par) {
+            document.getElementById('image-data').src = par;
+        }
+    </script>
 </body>
+
 </html>
