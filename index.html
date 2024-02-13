@@ -1,44 +1,268 @@
+
 <!DOCTYPE html>
-<html lang="tr">
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8">
+		<meta name="description" content="Involute spur gear generator and simulator" />
+		<meta name="keywords" content="Gear generator, simulator, geargenerator, lasercut, cad, cnc, gear design, making gears, autocad, dxf, download dxf, download autocad, html, css, javascript, svg, download, free" />
+		<meta name="author" content="Abel Vincze" />
+		<meta property="og:url" content="https://geargenerator.com/" />
+		<meta property="og:title" content="Involute spur gear generator and simulator" />
+		<meta property="og:description" content="Gear Generator is a tool for creating involute spur gears and download them in SVG format. In addition it let you compose full gear layouts with connetcted gears to design multiple gears system with control of the input/output ratio and rotation speed. Gears can be animated with various speed to demonstrate working mechanism" />
+		<meta property="og:image" content="https://geargenerator.com/shareimage.jpg" />
+    <link rel="shortcut icon" href="https://tdrmachine.com/public/images/site-component/1_00000.png" type="image/x-icon" />
+		<title>Gear Generator 2</title>
+		<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="jquery.cookie.js"></script>
+		<script src="https://cdn.paddle.com/paddle/paddle.js"></script>
+		<script type="text/javascript">
+			Paddle.Setup({ vendor: 2509 });
+		</script>
+		<script type="text/javascript" src="gg_dev_pmin.js"></script>
+		<link href='geargenerator_dev.css' rel='stylesheet' type='text/css'>
+	</head>
+	<body class="col1">
+		<div id="screencontainer">
+			<div id="screen"></div>
+		</div>
+		<div id="panel" class="planetinput">
+			<h1 id="title">Gear Generator Beta</h1>
+			<p class="title">Gear</p><p class="title">Generator</p><p class="stitle">Version 2 public beta</p>
+			<div id="animpanel">
+				<label class="h2">Animation:</label>
+				<button onclick="_(2,4,0)">Start/Stop</button><button class="first" onclick="_(2,4,1)">Freeze</button><button class="last" onclick="_(2,4,2)">Reset</button><br>
+				<label for="RPM">Speed (RPM)*:</label>
+				<input type="text" id="RPM" value="6" class="unitless"><button class="first" onclick="_(2,13,0)">–</button><button class="last" onclick="_(2,13,1)">+</button><button onclick="_(2,13,2)">Rev</button><br>
+				<span class="rem">* Shift + Enter: Set RPM of the selected gear</span>
+			</div>
+			<div id="gearlist">
+				<label class="h2">Gears:</label>
+				<button class="EV" onclick="_(2,25)" title="Add a new gear connected to the selected one">Add New</button><button class="EV first" onclick="_(2,26)" title="Remove selected gear and all child gears">Remove</button><button onclick="clearAll()" class="last" title="Clear all, and start with a single default gear">Clear</button><br>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ömer Taşdemir</title>
-</head>
+				<!-- <h2 style="display: inline-block;">+&nbsp;</h2><button class="first" onclick="Aadd(-5)">Gear</button><button class="next">Internal</button><button class="next">Rack</button><button class="next">Chain</button><button class="last" onclick="Aadd(5)">Planetary</button> -->
+				<ul id="gearselector"></ul>
+				<label for="theme">Visibility:</label>
+				<button id="VS0" class="EV first VS radio" onclick="_(2,27,0)" title="All layers are visible">All</button><button id="VS1" class="EV next VS radio" onclick="_(2,27,1)" title="Selected object's layer only">Same layer</button><button id="VS2" class="EV last VS radio" onclick="_(2,27,2)" title="Selected object only">Object</button><br>
+				<label class="h2">Gear type:</label>
+				<button id="typegear" class="first radio selected geartype" onclick="_(2,15,0)" title="Spur Gear"><svg width="40px" height="32px" viewBox="0 0 40 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path class="gearicon" d="M20,2c7.725,0 14,6.275 14,14c0,7.725 -6.275,14 -14,14c-7.725,0 -14,-6.275 -14,-14c0,-7.725 6.275,-14 14,-14Zm0,2c6.625,0 12,5.375 12,12c0,6.625 -5.375,12 -12,12c-6.625,0 -12,-5.375 -12,-12c0,-6.625 5.375,-12 12,-12Zm-0.296,12l-1.267,1.267c-0.079,0.083 -0.079,0.212 0,0.296c0.084,0.079 0.213,0.079 0.296,-0l1.267,-1.267l1.267,1.267c0.083,0.079 0.212,0.079 0.296,-0c0.079,-0.084 0.079,-0.213 -0,-0.296l-1.267,-1.267l1.267,-1.267c0.079,-0.083 0.079,-0.212 -0,-0.295c-0.084,-0.08 -0.213,-0.08 -0.296,-0l-1.267,1.266l-1.267,-1.266c-0.083,-0.08 -0.212,-0.08 -0.296,-0c-0.079,0.083 -0.079,0.212 0,0.295l1.267,1.267Z"/></svg></button><button id="typeinternal" class="next radio geartype" onclick="_(2,15,1)" title="Internal Gear"><svg width="40px" height="32px" viewBox="0 0 40 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path class="gearicon" d="M20,0c8.829,0 16,7.171 16,16c0,8.829 -7.171,16 -16,16c-8.829,0 -16,-7.171 -16,-16c-0,-8.829 7.171,-16 16,-16Zm-0,0.833c8.371,0 15.167,6.796 15.167,15.167c-0,8.371 -6.796,15.167 -15.167,15.167c-8.371,-0 -15.167,-6.796 -15.167,-15.167c0,-8.371 6.796,-15.167 15.167,-15.167Zm-0,3.167c6.625,0 12,5.375 12,12c-0,6.625 -5.375,12 -12,12c-6.625,0 -12,-5.375 -12,-12c-0,-6.625 5.375,-12 12,-12Zm-0,2c5.521,0 10,4.479 10,10c-0,5.521 -4.479,10 -10,10c-5.521,0 -10,-4.479 -10,-10c-0,-5.521 4.479,-10 10,-10Zm-0.296,10l-1.267,1.267c-0.079,0.083 -0.079,0.212 0,0.296c0.084,0.079 0.213,0.079 0.296,-0l1.267,-1.267l1.267,1.267c0.083,0.079 0.212,0.079 0.295,-0c0.08,-0.084 0.08,-0.213 0,-0.296l-1.266,-1.267l1.266,-1.267c0.08,-0.083 0.08,-0.212 0,-0.295c-0.083,-0.08 -0.212,-0.08 -0.295,-0l-1.267,1.266l-1.267,-1.266c-0.083,-0.08 -0.212,-0.08 -0.296,-0c-0.079,0.083 -0.079,0.212 0,0.295l1.267,1.267Z"/></svg></button><button id="typechain" class="next radio geartype" onclick="_(2,15,2)" title="Chainwheel Set"><svg width="40px" height="32px" viewBox="0 0 40 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path class="gearicon" d="M14.88,27.701l19.042,-4.443c0.03,-0.004 0.054,-0.008 0.084,-0.016c3.296,-0.76 5.759,-3.717 5.759,-7.242c-0,-3.534 -2.471,-6.494 -5.776,-7.246l-19.25,-4.488c-0.004,-0 -0.012,-0 -0.017,-0.004c-0.809,-0.171 -1.627,-0.262 -2.487,-0.262c-6.623,0 -12,5.377 -12,12c0,6.623 5.377,12 12,12c0.91,0 1.794,-0.104 2.645,-0.299Zm-2.645,-21.334c5.315,-0 9.634,4.318 9.634,9.633c-0,5.315 -4.319,9.633 -9.634,9.633c-5.315,0 -9.633,-4.318 -9.633,-9.633c0,-5.315 4.318,-9.633 9.633,-9.633Zm5.494,0.726l14.728,3.434c-2.882,0.162 -5.174,2.55 -5.174,5.473c0,2.919 2.284,5.307 5.161,5.473l-14.715,3.434c2.981,-1.844 4.97,-5.145 4.97,-8.907c-0,-3.762 -1.989,-7.059 -4.97,-8.907Zm15.035,4.256c2.566,0 4.651,2.085 4.651,4.651c-0,2.566 -2.085,4.651 -4.651,4.651c-2.566,-0 -4.651,-2.085 -4.651,-4.651c0,-2.566 2.085,-4.651 4.651,-4.651Zm0.021,4.356l-1.263,-1.262c-0.083,-0.079 -0.211,-0.079 -0.294,-0c-0.079,0.083 -0.079,0.212 -0,0.295l1.262,1.262l-1.262,1.262c-0.079,0.083 -0.079,0.212 -0,0.295c0.083,0.079 0.211,0.079 0.294,0l1.263,-1.262l1.262,1.262c0.079,0.079 0.212,0.079 0.295,0c0.079,-0.083 0.079,-0.212 -0,-0.295l-1.262,-1.262l1.262,-1.262c0.079,-0.083 0.079,-0.212 -0,-0.295c-0.083,-0.079 -0.216,-0.079 -0.295,-0l-1.262,1.262Zm-21.052,0.295l-1.262,1.262c-0.079,0.083 -0.079,0.212 -0,0.295c0.083,0.079 0.211,0.079 0.294,0l1.263,-1.262l1.262,1.262c0.083,0.079 0.212,0.079 0.295,0c0.079,-0.083 0.079,-0.212 -0,-0.295l-1.263,-1.262l1.263,-1.262c0.079,-0.083 0.079,-0.212 -0,-0.295c-0.083,-0.079 -0.212,-0.079 -0.295,-0l-1.262,1.262l-1.263,-1.262c-0.083,-0.079 -0.211,-0.079 -0.294,-0c-0.079,0.083 -0.079,0.212 -0,0.295l1.262,1.262Z"/></svg></button><button id="typeplanetary" class="last radio geartype" onclick="_(2,15,3)" title="Planetary Gearset"><svg width="40px" height="32px" viewBox="0 0 40 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path class="gearicon" d="M20,0c8.829,0 16,7.171 16,16c0,8.829 -7.171,16 -16,16c-8.829,0 -16,-7.171 -16,-16c0,-8.829 7.171,-16 16,-16Zm-0,0.833c8.371,0 15.167,6.796 15.167,15.167c-0,8.371 -6.796,15.167 -15.167,15.167c-8.371,-0 -15.167,-6.796 -15.167,-15.167c0,-8.371 6.796,-15.167 15.167,-15.167Zm-0,1.167c7.725,0 14,6.275 14,14c0,7.725 -6.275,14 -14,14c-7.725,0 -14,-6.275 -14,-14c0,-7.725 6.275,-14 14,-14Zm3.863,19.838c0.283,1.145 1.016,2.175 2.116,2.808c0.538,0.312 1.117,0.5 1.7,0.571c-2.079,1.737 -4.758,2.783 -7.679,2.783c-2.921,0 -5.6,-1.046 -7.679,-2.783c0.583,-0.071 1.162,-0.259 1.7,-0.571c1.1,-0.633 1.833,-1.663 2.117,-2.808c1.108,0.733 2.437,1.162 3.862,1.162c1.425,0 2.754,-0.429 3.863,-1.162Zm-9.934,-2.355c0.004,0.009 0.013,0.021 0.017,0.029c0.679,1.196 0.267,2.717 -0.925,3.405c-1.192,0.687 -2.725,0.279 -3.413,-0.917c-0.691,-1.196 -0.279,-2.725 0.913,-3.417c1.192,-0.683 2.712,-0.283 3.408,0.9Zm12.125,0.03c0.004,-0.009 0.013,-0.021 0.017,-0.03c0.696,-1.183 2.217,-1.583 3.408,-0.9c1.192,0.692 1.604,2.221 0.913,3.417c-0.688,1.196 -2.221,1.604 -3.413,0.917c-1.191,-0.688 -1.604,-2.209 -0.925,-3.405Zm1.804,1.196l-0.912,0.913c-0.083,0.079 -0.083,0.212 -0,0.296c0.079,0.079 0.212,0.079 0.296,-0l0.912,-0.917l0.913,0.917c0.079,0.079 0.212,0.079 0.296,-0c0.079,-0.084 0.079,-0.217 -0,-0.296l-0.917,-0.913l0.917,-0.912c0.079,-0.084 0.079,-0.217 -0,-0.296c-0.084,-0.083 -0.217,-0.083 -0.296,-0l-0.913,0.912l-0.912,-0.912c-0.084,-0.083 -0.217,-0.083 -0.296,-0c-0.083,0.079 -0.083,0.212 -0,0.296l0.912,0.912Zm-16.304,0l-0.916,0.913c-0.08,0.079 -0.08,0.212 -0,0.296c0.083,0.079 0.216,0.079 0.295,-0l0.913,-0.917l0.912,0.917c0.084,0.079 0.217,0.079 0.296,-0c0.084,-0.084 0.084,-0.217 0,-0.296l-0.912,-0.913l0.912,-0.912c0.084,-0.084 0.084,-0.217 0,-0.296c-0.079,-0.083 -0.212,-0.083 -0.296,-0l-0.912,0.912l-0.913,-0.912c-0.079,-0.083 -0.212,-0.083 -0.295,-0c-0.08,0.079 -0.08,0.212 -0,0.296l0.916,0.912Zm8.446,-9.708c2.758,-0 5,2.242 5,5c0,0.904 -0.242,1.75 -0.658,2.483l-0.021,0.029c-0.867,1.488 -2.479,2.488 -4.321,2.488c-1.842,-0 -3.454,-1 -4.321,-2.488l-0.021,-0.029c-0.416,-0.733 -0.658,-1.579 -0.658,-2.483c0,-2.758 2.242,-5 5,-5Zm-4.142,-6.267c-0.229,0.542 -0.358,1.142 -0.358,1.767c0,1.271 0.529,2.417 1.375,3.237c-2.296,1.146 -3.875,3.521 -3.875,6.263c0,0.142 0.004,0.283 0.013,0.425c-1.134,-0.325 -2.392,-0.208 -3.492,0.429c-0.542,0.313 -0.992,0.721 -1.346,1.192c-0.117,-0.663 -0.175,-1.346 -0.175,-2.046c0,-5.167 3.275,-9.579 7.858,-11.267Zm8.284,0c4.583,1.688 7.858,6.1 7.858,11.267c0,0.7 -0.058,1.383 -0.175,2.046c-0.354,-0.471 -0.804,-0.879 -1.346,-1.192c-1.1,-0.637 -2.358,-0.754 -3.491,-0.429c0.008,-0.142 0.012,-0.283 0.012,-0.425c0,-2.742 -1.579,-5.117 -3.875,-6.263c0.846,-0.82 1.375,-1.966 1.375,-3.237c0,-0.625 -0.129,-1.225 -0.358,-1.767Zm-4.438,11.267l-1.266,1.267c-0.08,0.083 -0.08,0.212 -0,0.296c0.083,0.079 0.212,0.079 0.295,-0l1.267,-1.267l1.267,1.267c0.083,0.079 0.212,0.079 0.296,-0c0.079,-0.084 0.079,-0.213 -0,-0.296l-1.267,-1.267l1.267,-1.267c0.079,-0.083 0.079,-0.212 -0,-0.295c-0.084,-0.08 -0.213,-0.08 -0.296,-0l-1.267,1.266l-1.267,-1.266c-0.083,-0.08 -0.212,-0.08 -0.295,-0c-0.08,0.083 -0.08,0.212 -0,0.295l1.266,1.267Zm0.296,-7c-1.379,0 -2.5,-1.121 -2.5,-2.5c0,-1.379 1.121,-2.5 2.5,-2.5c1.379,0 2.5,1.121 2.5,2.5c0,1.379 -1.121,2.5 -2.5,2.5Zm-0.296,-2.412l-0.912,0.912c-0.079,0.079 -0.079,0.213 -0,0.296c0.083,0.079 0.212,0.079 0.296,-0l0.912,-0.917l0.913,0.917c0.083,0.079 0.212,0.079 0.295,-0c0.08,-0.083 0.08,-0.217 0,-0.296l-0.912,-0.912l0.912,-0.917c0.08,-0.079 0.08,-0.213 0,-0.292c-0.083,-0.083 -0.212,-0.083 -0.295,0l-0.913,0.913l-0.912,-0.913c-0.084,-0.083 -0.213,-0.083 -0.296,0c-0.079,0.079 -0.079,0.213 -0,0.292l0.912,0.917Z"/></svg></button>
+			</div>
+			<h2>Connection properties</h2>
+			<p>
+				<span id="PGCTRL">
+				<label for="PG">Parent gear #:</label>
+				<input type="text" id="PG" class="EV unitless PGin"><button class="EV select PGin" onclick="_(2,0)" title="Select parent gear">Select</button>
+				<label for="CAXLE">Axle connection:</label>
+				<input type="checkbox" checked="checked" id="CAXLE" class="thecheckbox"><br>
+				</span>
+				<label for="CA">Connection angle:</label>
+				<input type="text" id="CA" class="EV"><button class="EV first" onclick="_(2,7,0)">–</button><button class="EV last" onclick="_(2,7,1)">+</button>
 
-<body>
-    <h1>90 derece ye kadar k faktör hesaplama</h1>
-    <label for="acinin-boyu">Açının Boyu</label>
-    <input onfocus="imagePrint('https://blog.tekyaz.com/kfaktor/90_1.PNG');" type="text" id="acinin-boyu">
-    <br>
-    <br>
-    <label for="">l1 ölçüsü</label>
-    <input onfocus="imagePrint('https://blog.tekyaz.com/kfaktor/90_2.PNG');" type="text" name="" id="">
-    <br>
-    <br>
-    <label for="">l2 ölçüsü</label>
-    <input onfocus="imagePrint('https://blog.tekyaz.com/kfaktor/90_3.PNG');" type=" text" name="" id="">
-    <br>
-    <br>
-    <label for="">T saç kalınlığı</label>
-    <input onfocus="imagePrint('https://blog.tekyaz.com/kfaktor/90_4.PNG');" type=" text" name="" id="">
-    <br>
-    <br>
-    <label for="">r büküm açısı</label>
-    <input onfocus="imagePrint('https://blog.tekyaz.com/kfaktor/90_5.PNG');" type=" text" name="" id="">
+				<!--<span id="APCTRL">
+				<label for="AUTOP">Auto position:</label>
+				<input type="checkbox" checked="checked" id="AUTOP" class="thecheckbox"><br>
+				</span>-->
+				<span id="POSCTRL">
+				<label for="PX">X position:</label>
+				<input type="text" id="PX" class="EV PXYin"><button class="EV first PXYin" onclick="_(2,8,0)">–</button><button class="EV last PXYin" onclick="_(2,8,1)">+</button>
+				<label for="PY">Y position:</label>
+				<input type="text" id="PY" class="EV PXYin"><button class="EV first PXYin" onclick="_(2,9,0)">–</button><button class="EV last PXYin" onclick="_(2,9,1)">+</button>
+				</span>
+			</p>
+			<h2 id="gearproptitle">Planetary Gearset properties</h2>
+			<p>
+				<label for="Name">Name (optional):</label>
+				<input type="text" id="Name" class="EV nameinput"><br>
 
-    <button id=""> Hesapla </button>
-    <br>
-    <img style="margin-right: 10px;" width="400" src="" id="image-data" alt="">
+				<!--<span class="gearin_b">
+					<label for="IG">Internal Gear:</label>
+					<input type="checkbox" checked="checked" id="IG" class="thecheckbox"><br>
+				</span>-->
 
-    <script>
+				<span class="planetin_b gearin_b">
+					<span class="inonly_b">
+						<label for="P">Diametral pitch (P):</label>
+						<input type="text" id="P" class="EV unitless"><button class="EV first" onclick="_(2,5,0)">–</button><button class="EV last" onclick="_(2,5,1)">+</button><br>
+					</span>
+					<span class="mmonly_b">
+						<label for="M">Module (M):</label>
+						<input type="text" id="M" class="EV unitless"><button class="EV first" onclick="_(2,2,0)">–</button><button class="EV last" onclick="_(2,2,1)">+</button>
+				  </span>
+				</span>
+				
+				<span class="chainin_b">
+					<label for="CP">Link Pitch (P):</label>
+					<input type="text" id="CP"><button class="first" onclick="_(2,22,0)">–</button><button class="last" onclick="_(2,22,1)">+</button>
+				</span>
+				<span class="chainin_b beltin_b">
+					<label for="CD">Wheel distance (D):</label>
+					<input type="text" id="CD"><button class="first" onclick="_(2,23,0)">–</button><button class="last" onclick="_(2,23,1)">+</button><br>
+				</span>
 
-        function imagePrint(par) {
-            document.getElementById('image-data').src = par;
-        }
-    </script>
-</body>
+				<span class="gearin_b">
+					<label for="N">Number of teeth* (N):</label>
+					<input type="text" id="N" class="EV unitless"><button class="EV first" onclick="_(2,1,0)">–</button><button class="EV last" onclick="_(2,1,1)">+</button><br>
+					<label for="D" class="mmonly_ib">Base diameter* (D):</label>
+					<label for="D" class="inonly_ib">Pitch diameter* (D):</label>
+					<input type="text" id="D" class="EV"><br>
+				</span>
+			</p>
+			<h3 class="planetin_b">Planetary Setup</h3>
+			<p class="planetin_b">
+				<label for="ST">Sun Gear</label>
+				<button id="STinput" class="first radio inputselect" onclick="_(2,10,0)" title="Set to Input">Input</button><button id="STfixed" class="next radio fixedselect selected" onclick="_(2,11,0)" title="Set to Fixed">Fixed</button><button id="SToutput" class="last radio outputselect" onclick="_(2,12,0)" title="Set to Output">Output</button>
+				<br>
+				<label for="PT">Planet Carrier</label>
+				<button id="PTinput" class="first radio selected inputselect" onclick="_(2,10,1)" title="Set to Input">Input</button><button id="PTfixed" class="next radio fixedselect" onclick="_(2,11,1)" title="Set to Fixed">Fixed</button><button id="PToutput" class="last radio outputselect" onclick="_(2,12,1)" title="Set to Output">Output</button>
+				<br>
+				<label for="RT">Ring Gear</label>
+				<button id="RTinput" class="first radio inputselect" onclick="_(2,10,2)" title="Set to Input">Input</button><button id="RTfixed" class="next radio fixedselect" onclick="_(2,11,2)" title="Set to Fixed">Fixed</button><button id="RToutput" class="last radio outputselect selected" onclick="_(2,12,2)" title="Set to Output">Output</button>
+				<br>
+				
+				<label for="NP">Number of Planets:</label>
+				<input type="text" id="NP" class="unitless"><button class="first" onclick="_(2,16,0)">–</button><button class="last" onclick="_(2,16,1)">+</button><br>
+			</p>
+			<span class="planetin_b">
+				<h3>Number of teeth</h3>
+				<p>
+				<label for="SN">Sun Gear* (SN):</label>
+				<input type="text" id="SN" class="unitless"><button class="first" onclick="_(2,17,0)">–</button><button class="last" onclick="_(2,17,1)">+</button><br>
+				<label for="PN">Planet Gears* (PN):</label>
+				<input type="text" id="PN" class="unitless"><button class="first" onclick="_(2,18,0)">–</button><button class="last" onclick="_(2,18,1)">+</button><br>
+				<label for="RN">Ring Gear* (RN):</label>
+				<input type="text" id="RN" class="unitless"><button class="first" onclick="_(2,19,0)">–</button><button class="last" onclick="_(2,19,1)">+</button><br>
+				</p>
+			</span>
+			<span class="chainin_b">
+				<h3>Number of teeth</h3>
+				<p>
+				<label for="CPN">Primary* (PN):</label>
+				<input type="text" id="CPN" class="unitless"><button class="first" onclick="_(2,20,0)">–</button><button class="last" onclick="_(2,20,1)">+</button><button id="CPS" onclick="_(2,20,2)">Swap</button><br>
+				<label for="CSN">Secondary* (SN):</label>
+				<input type="text" id="CSN" class="unitless"><button class="first" onclick="_(2,21,0)">–</button><button class="last" onclick="_(2,21,1)">+</button><br>
+				</p>
+			</span>
+			<p class="planetin_b gearin_b">
+				<label for="PA">Pressure Angle (PA):</label>
+				<input type="text" id="PA" class="EV"><button class="EV first" onclick="_(2,6,0)">–</button><button class="EV last" onclick="_(2,6,1)">+</button><br>
+				<span class="rem inonly_b">* Shift + Enter: modifies the Diametral pitch</span>
+				<span class="rem mmonly_b">* Shift + Enter: modifies the Module</span>
+				<br>
+			</p>
 
+			<h2 class="appdisabled">Pay Download</h2>
+			<p class="appdisabled">
+				<label>Gear CAD file:</label><button id="DLD" class="EV" onclick="_(3,2);">Download DXF</button>
+				<!--<label>Gear 3D object:</label><button id="DLS" class="EV" onclick="_(3,3);">Download STL</button>-->
+				<label>Gear vector image:</label><button id="DLS" class="EV" onclick="_(3,0);">Download SVG</button>
+				<label>Gearset vector image:</label><button onclick="_(3,1);">Download Gearset SVG</button><br>
+			</p>
+			<div>
+				<h2>Display</h2>	
+				<span id="unitpanel">
+					<label>Unit system:</label>
+					<button id="unitmm" class="first radio selected" onclick="_(2,3,0)" title="Use Metric Units">Metric</button><button id="unitin" onclick="_(2,3,1)" class="last radio" title="Use Mmperial Units">Imperial</button>
+				</span>
+				<label for="scale" id="scaleintitle">Scale (pixels per unit):</label>
+				<input type="text" id="scale" value="100" class="unitless"><button class="first" onclick="_(2,14,0)">–</button><button class="last" onclick="_(2,14,1)">+</button><br>
+				<label for="grid">Grid:</label>
+				<input type="checkbox" id="grid" class="thecheckbox display"><br>
+				<label for="guides">Gear guides:</label>
+				<input type="checkbox" id="guides" class="thecheckbox display"><br>
+				<label for="labels">Gear label:</label>
+				<input type="checkbox" id="labels" class="thecheckbox display"><br>
+				<label for="theme">Color theme:</label>
+				<button id="themelight" class="first radio themeselect" onclick="_(2,24,0)" title="Switch to Light theme">Light</button><button id="themeblueprint" class="next radio selected themeselect" onclick="_(2,24,1)" title="Switch to Blueprint theme">Blueprint</button><button id="themedark" class="last radio themeselect" onclick="_(2,24,2)" title="Switch to Dark theme">Dark</button>
+			</div>
+			<!--<div id="units" class="appdisabled">
+				<h2>Units</h2>
+				<p>Gear Generator is unitless: if you wish it's inches, cm or millimeters. DXF opened in AutoCAD will have the same value for D/P as it is set above. Gears in SVG are measured in pixels, which is the value multiplied with the scale (Pixel per Unit) as it is displayed on the right side.</p>
+			</div>
+			<div id="about" class="appdisabled">
+				<h2>About</h2>
+				<p>Gear Generator is a tool for creating <a href="http://en.wikipedia.org/wiki/Involute_gear" target="_blank">involute spur gears</a> and download them in DXF or SVG format. In addition it let you compose full gear layouts with connetcted gears to design multiple gears system with control of the input/output ratio and rotation speed. Gears can be animated with various speed to demonstrate working mechanism.
+				</p>
+				<p>Why this tool was created? Just for fun. I'm working on a hobby project, <a href="http://flip.world/42902" target="_blank">a scale construction machine</a>, which needed some spur gears, and I quickly made a simple <a href="index_proto.html" target="_blank">spur gear creator</a> script in Javascript with SVG output. As it was done, I couldn't stop, and I added more and more features, and finally I got this tool. It was a pleasure to code the whole thing, I'm a bit sad it is already done.
+				</p>
+				<span class="rem">Support: <a href="mailto:abel@iparigrafika.hu">abel@iparigrafika.hu</a></span>
+				<p>Notes about browser compatibility: all new major browsers are supported (i didn't tested IE), but unfortunately Chrome can't render SVG circle correctly. The winners are: Opera for the best performance (shame on me, I never use it) and Firefox for the best looking SVG render.</p>
+				<p>The downloaded DXF file can be opened with AutoCad 2013 or newer versions.</p>
+				<p>Update 1.1: Now you can download whole gearset assembly in one SVG file.</p>
+				<p>Update 1.5: Fixed DXF resolution issue. Maximum number of teeth increased to 400.</p>
+				<p>Update 1.4: TA-DA: Added internal gear support, and the ability of positioning the first gear.</p>
+				<p>Update 1.3: Fixed DXF file format.</p>
+				<h2>On YouTube</h2>
+				<p>Finally some videos I found on youtube:<br><a href="https://youtu.be/dBfvKPmGfwg" target="_blank">Gear Generator How to Draw Perfect Gears (4:23)</a><br><a href="https://youtu.be/NqdJ7tysFqk" target="_blank">Laser Cut Gears (3:08)</a><br><a href="https://youtu.be/QsNv7nXk2lw" target="_blank">Prototype your gear sets in 2D (1:19)</a></p>
+				<p>
+					Check out other tools I made:<br><a href="http://print-charts.com" target="_blank">Print Charts</a>, <a href="http://flip.world" target="_blank">Flip.World</a>, <a href="http://htmlspirograph.com" target="_blank">HTML Spirograph</a>.
+				</p>
+			</div>-->
+			<div class="appdisabled">
+				<p>If you like it, please share:
+					<a href="https://twitter.com/intent/tweet?original_referer=http%3a%2f%2fgeargenerator.com&amp;url=http%3a%2f%2fgeargenerator.com&amp;text=What+a+nice+gear+generator+%23HTML+%23CSS+via+%40AbelVincze" target="_blank"><svg style="margin-left: 12px;" version="1.2" baseProfile="tiny" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="34px" height="25px" viewBox="0 0 34 25" xml:space="preserve"><path class="shareicon" d="M31.016,11.572c-0.971,0-1.908-0.136-2.793-0.384c0-0.03,0-0.06,0-0.091c0.154,0.02,0.315,0.03,0.479,0.03c1.3,0,2.445-0.629,3.129-1.587c-0.612,0.246-1.283,0.382-1.987,0.382c-0.63,0-1.233-0.109-1.788-0.308c-0.145-0.658-0.377-1.301-0.709-1.913c-2.406-4.452-6.177-3.977-6.177-3.977s2.776-0.54,2.646-1.276C23.686,1.71,21.12,2.852,21.12,2.852s1.424-0.77,1.224-1.096c-0.189-0.311-2.305,0.961-2.305,0.961s0.348-0.492,0.215-0.635c-0.134-0.143-1.818,1.271-3.108,3.364c-1.291,2.094-1.803,4.013-1.803,4.013s-0.664-0.812-2.166-1.824c-1.606-1.078-8.432-3.583-8.432-3.583S4.483,4.901,5.447,6.391c0.606,0.94,1.946,1.487,1.946,1.487s-0.552,0-0.98,0.06c-0.398,0.056-0.88,0.167-0.88,0.167S5.396,9.21,6.65,10.164c1.253,0.952,2.341,1.048,2.341,1.048s-0.682,0.049-1.197,0.225c-0.534,0.184-0.92,0.644-0.92,0.644s0.409,0.794,1.268,1.365c1.134,0.753,2.604,0.515,2.604,0.515s-1.316,0.338-1.23,1.372c0.123,1.518,2.347,1.211,2.347,1.211c-1.527,1.587-3.729,2.512-6.158,2.512c-2.196,0-4.213-0.74-5.703-2.072c0,0,8.422,11.141,22.605,3.168c2.902-1.633,4.925-4.441,5.47-7.353c0.256,0.049,0.521,0.076,0.792,0.076c1.206,0,2.283-0.52,3.009-1.336C31.591,11.557,31.305,11.572,31.016,11.572z"/></svg></a>
+					<a href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fgeargenerator.com" target="_blank"><svg version="1.2" baseProfile="tiny" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="25px" viewBox="0 0 30 25" xml:space="preserve"><path class="shareicon" d="M20.035,24.729h-5.323V12.365h-2.659V8.103h2.659V5.545C14.712,2.069,16.216,0,20.48,0h3.551v4.263h-2.219c-1.662,0-1.771,0.596-1.771,1.708l-0.005,2.132h4.022l-0.473,4.262h-3.551V24.729z"/></svg></a>
+					<a href="http://pinterest.com/pin/create/button/?url=http%3a%2f%2fgeargenerator.com&amp;media=http%3a%2f%2fgeargenerator.com%2fshareimage.jpg&amp;description=Involute+spur+gear+generator+and+simulator+in+%23HTML+%23CSS" target="_blank"><svg version="1.2" baseProfile="tiny" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="25px" viewBox="0 0 32 25" xml:space="preserve"><path class="shareicon" d="M19.607,16.155c-0.604,2.542-1.196,4.992-2.489,6.926c-0.394,0.592-0.792,1.337-1.466,1.656c-1-4.937,1.084-9.092,1.912-13.243c-1.055-2.06-0.397-5.552,1.852-5.945c3.262-0.575,2.402,3.206,1.85,4.965c-0.304,0.963-0.851,1.885-0.767,2.944c0.181,2.228,3.099,2.371,4.591,1.226c2.143-1.644,2.76-4.814,2.553-7.419C27.325,3.3,22.65,1.328,18.523,2.913c-2.125,0.819-4.059,2.697-4.338,5.456c-0.147,1.455,0.17,2.614,0.765,3.434c0.092,0.124,0.401,0.343,0.446,0.674c0.094,0.673-0.322,1.399-0.701,1.901c-2.113-0.586-3.205-2.412-3.379-4.719c-0.398-5.255,4.088-9.253,9.373-9.625c5.638-0.396,10.109,2.732,10.523,7.295c0.309,3.392-0.941,6.807-2.933,8.643c-1.493,1.379-4.673,2.73-7.271,1.41C20.434,17.087,20.18,16.729,19.607,16.155z"/></svg></a>
+				</p>
+			</div>
+		</div>
+		<div id="footer">
+			<div id="contentcover"></div>
+			<p><a href="http://iparigrafika.hu/" target="_blank">(C) 2014-2022 - Gear Generator 2 - Created by Abel Vincze</a></p>
+		</div>
+		<div id="DWNLD_wrapper" class="hidden">
+			<div id="DWNLD_container">
+				<h2 class="type0">Download Gear</h2>
+				<h2 class="type1">Download Gearset</h2>
+				<h2 class="type2">Download Gear CAD file</h2>
+				<p class="pay">Please select a download plan:</p>
+				<ul id="priceselect" class="prices pay">
+					<li id="priceselect1" onclick="_(7,1);" class="priceselect"><div class="price">2 EUR</div>Single Day Download</li>
+					<li id="priceselect2" onclick="_(7,2);" class="priceselect"><div class="price">10 EUR</div>One Month Unlimited Download</li>
+					<li id="priceselect3" onclick="_(7,3);" class="priceselect"><div class="price">25 EUR</div>One Year Unlimited Download</li>
+				</ul>
+				<p class="pay">
+					<a onclick="_(4)">Already paid for download?</a>
+					<div id="checkmail">
+						<input type="text" id="checker" placeholder="your e-mail address" class="overlayinput"><button onclick="_(5)">Check it</button>
+					</div>
+				<p>
+				<a id="downloadlink" class="disabled"><button class="type0" id="downloadsvg" title="Download in SVG vector image format" onclick="_(6);">Download SVG</button>
+				<button class="type1" id="downloadassembly" title="Download whole gearset in SVG vector image format" onclick="_(6);">Download Gearset SVG</button>
+				<button class="type2" id="downloaddxf" title="Download in DXF file format" onclick="_(6);">Download DXF</button></a>
+				<p id="dlnote"></p>
+				<p class="rem"><small></small></p>
+			</div>
+		</div>
+		<div id="dragbar"></div>
+		<div id="demo">
+			<p>Unregistred! <input id="lkey" type="text" placeholder="Enter License Key" value=""> <button onclick="registerProduct()">Register</button></p>
+		</div>
+		<div id="devout"><pre id="out"></pre></div>
+		<div id="cookies">
+			<p>Is it OK to use cookies on this site to store your settings, like unit system, theme used of your preference?</p>
+			<button onclick="_(2,28,0)">No cookies</button><button onclick="_(2,28,1)">OK</button>
+		</div>
+	</body>
+	<script>
+		_(0);	// starting the app
+		$("p.title").each(function() { _(1, $( this ), true, 5, 5  ); });
+		_(1, $("p.stitle"), true, 2, 1 );
+		_(1, $("#footer a"), true, 1, 1 );
+	</script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'UA-780078-4');
+    function clearAll(){
+      window.location.href = "index.html#TK75zvg5juPehaS@DAT0sV2gwTGY4i@3eumBun3TnPC";
+    }
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function () {
+          navigator.serviceWorker
+            .register("https://ozgurvurgun.github.io/pwa-s/adu-note-calculator/serviceWorker.js")
+            .then((res) => console.log("service worker registered"))
+            .catch((err) => console.log("service worker not registered", err));
+        });
+      }
+	</script>
 </html>
